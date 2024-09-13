@@ -13,8 +13,12 @@ import sys
 import argparse
 import hjson
 import json
-from jsonformatter import JsonFormatter
+#from jsonformatter import JsonFormatter
 import time
+
+# Issues
+# - No version number
+# - No link to source code
 
 def IsWordHasReq(word,rletter):
     for i in range(0,len(word)): 
@@ -38,36 +42,72 @@ def IsWord(word,rletter,aletters):
     if IsWordHasReq(word,rletter):
         if IsWordIsOnly(word,aletters):
             return True
+
+def IsPangram(word,aletters):
+    for i in range(0,len(aletters)): 
+        found = False
+        for j in range(0,len(word)): 
+            if(word[j] == aletters[i]):
+                found = True
+        if not found:
+            return False
+    return True
+
+def ScoreWord(word,aletters):
+    # 4 letters => 1 Pts
+    # 5 letters => 2 Pts
+    # + 7 for pangram
+    raw_score = len(word) - 3
+    if IsPangram(word,aletters):
+        return(raw_score+7)
+    else:
+        return(raw_score)
+
     
 #
 # Start
 #
 
 # CLI Parser
-parser = argparse.ArgumentParser(description='Solce Spelling Bee')
-parser.add_argument("--center_letter", help="Required Letter", default="a")
+parser = argparse.ArgumentParser(description='New York Times Spelling Bee Solver',
+            epilog="""
+            The source for this Python3 program is publicly available at
+
+            https://github.com/craig-warner/solve-spelling-bee 
+            
+            Since the script uses a limited English dictionary,
+            there may be words it misses. Feel free to change the script to
+            use a more complete dictionary.
+            """,)
+parser.add_argument("--center_letter", help="required letter", default="a")
 parser.add_argument("--letter1", help="outside letter number 1", default="b")
-parser.add_argument("--letter2", help="outside letter number 1", default="b")
-parser.add_argument("--letter3", help="outside letter number 1", default="b")
-parser.add_argument("--letter4", help="outside letter number 1", default="b")
-parser.add_argument("--letter5", help="outside letter number 1", default="b")
-parser.add_argument("--letter6", help="outside letter number 1", default="b")
+parser.add_argument("--letter2", help="outside letter number 2", default="b")
+parser.add_argument("--letter3", help="outside letter number 3", default="b")
+parser.add_argument("--letter4", help="outside letter number 4", default="b")
+parser.add_argument("--letter5", help="outside letter number 5", default="b")
+parser.add_argument("--letter6", help="outside letter number 6", default="b")
 
 args = parser.parse_args()
 
 aletters = []
-aletters.append(args.center_letter)
-aletters.append(args.letter1)
-aletters.append(args.letter2)
-aletters.append(args.letter3)
-aletters.append(args.letter4)
-aletters.append(args.letter5)
-aletters.append(args.letter6)
+aletters.append(args.center_letter.lower())
+aletters.append(args.letter1.lower())
+aletters.append(args.letter2.lower())
+aletters.append(args.letter3.lower())
+aletters.append(args.letter4.lower())
+aletters.append(args.letter5.lower())
+aletters.append(args.letter6.lower())
 
 print("Info: Args Parse")
 
 all_words = hjson.load(open("tools/words.hjson"))
 print("Info: loaded Dictionary")
+total_words_found = 0
+total_score = 0
 for word in all_words: 
     if IsWord(word,args.center_letter,aletters):
-        print("Word Found:",word)
+        word_score = ScoreWord(word,aletters)
+        print("Word Found:",word," Score:",word_score)
+        total_words_found = total_words_found +1
+        total_score = total_score + word_score 
+print ("Total: Words Found=",total_words_found," Score=",total_score)
