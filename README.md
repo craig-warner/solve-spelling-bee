@@ -1,2 +1,2 @@
 # solve-spelling-bee
-Solves the New York Times Spelling Bee Game
+Solves the New York Times Spelling Bee game

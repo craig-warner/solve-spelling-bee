@@ -16,9 +16,11 @@ import json
 #from jsonformatter import JsonFormatter
 import time
 
+# Local Imports
+from version import __version__
+
 # Issues
-# - No version number
-# - No link to source code
+# - None
 
 def IsWordHasReq(word,rletter):
     for i in range(0,len(word)): 
@@ -86,6 +88,8 @@ parser.add_argument("--letter3", help="outside letter number 3", default="b")
 parser.add_argument("--letter4", help="outside letter number 4", default="b")
 parser.add_argument("--letter5", help="outside letter number 5", default="b")
 parser.add_argument("--letter6", help="outside letter number 6", default="b")
+parser.add_argument("-v", "--verbose", help="Increase output verbosity",action ="store_true") 
+parser.add_argument('-V', '--version', action='version', version="%(prog)s ("+__version__+")")
 
 args = parser.parse_args()
 

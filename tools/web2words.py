@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Websters Dictionaly to Words
+Websters Dictionary to Words
 author: Craig Warner
 """
 
@@ -13,9 +13,14 @@ import sys
 import argparse
 import hjson
 import json
-from jsonformatter import JsonFormatter
+#from jsonformatter import JsonFormatter
 import time
 
+#
+# Functions
+#
+def IsAllLetters(word):
+    return word.isalpha()
 
 #
 # Start
@@ -24,7 +29,9 @@ import time
 # CLI Parser
 parser = argparse.ArgumentParser(description='Webster to Words')
 parser.add_argument("--ifile", help="Template file (.hjson)", default="web.json")
-parser.add_argument("--ofile", help="Output file (.hjson)", default="words.hjson")
+parser.add_argument("--ofile", help="Output file (.hjson)", default="owords.hjson")
+parser.add_argument("--all_letters", help="Filter out words which contain numbers and symbols",action="store_true")
+parser.add_argument("-v", "--verbose", help="Increase output verbosity",action ="store_true") 
 
 args = parser.parse_args()
 
@@ -32,15 +39,25 @@ print("Info: Args Parse")
 
 all_words = []
 web = hjson.load(open(args.ifile))
-print("Info: loaded Dictionary")
+if args.verbose:
+    print("Info: loaded Dictionary")
 for word in web: 
-    all_words.append(word)
+    if args.all_letters:
+        if IsAllLetters(word):
+            all_words.append(word)
+        else: 
+            if args.verbose:
+                print("Info: Dropped:",word)
+    else:
+        all_words.append(word)
 
-print("Info: Pulled words")
+if args.verbose:
+    print("Info: Pulled words")
 
 all_words.sort()
 
-print("Info: Sorted words")
+if args.verbose:
+    print("Info: Sorted words")
 
 wcnt = 0
 olines = []
