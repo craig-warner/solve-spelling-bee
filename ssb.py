@@ -111,7 +111,12 @@ total_score = 0
 for word in all_words: 
     if IsWord(word,args.center_letter,aletters):
         word_score = ScoreWord(word,aletters)
-        print("Word Found:",word," Score:",word_score)
+        if IsPangram(word,aletters):
+            pstr = "*pangram*"
+        else:
+            pstr = ""
+        str = "Word found: %15s, Value: %d %s" % (word,word_score,pstr)
+        print(str)
         total_words_found = total_words_found +1
         total_score = total_score + word_score 
-print ("Total: Words Found=",total_words_found," Score=",total_score)
+print ("Total number of words found=",total_words_found," Score=",total_score)
