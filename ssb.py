@@ -57,9 +57,12 @@ def IsPangram(word,aletters):
 
 def ScoreWord(word,aletters):
     # 4 letters => 1 Pts
-    # 5 letters => 2 Pts
+    # 5 letters => 5 Pts
     # + 7 for pangram
-    raw_score = len(word) - 3
+    if len(word) == 4:
+        raw_score = 1
+    else:
+        raw_score = len(word)
     if IsPangram(word,aletters):
         return(raw_score+7)
     else:
